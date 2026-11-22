@@ -1,0 +1,38 @@
+# 예제 값입니다. 실제 값으로 바꿔서 사용하세요.
+
+aws:
+  access_key_id: YOUR_AWS_ACCESS_KEY_ID
+  secret_access_key: YOUR_AWS_SECRET_ACCESS_KEY
+  region_name: ap-northeast-2
+  s3_bucket: example-lakehouse-bucket
+
+spark:
+  master: "local[8]"
+  driver_memory: 8g
+  packages:
+    - org.apache.iceberg:iceberg-spark-runtime-3.4_2.12:1.9.2
+    - org.apache.hadoop:hadoop-aws:3.3.4
+    - com.amazonaws:aws-java-sdk-bundle:1.12.262
+    - com.clickhouse:clickhouse-jdbc:0.9.9
+
+iceberg:
+  catalog: source                                       # 원본 카탈로그 (Hive metastore, 읽기만)
+  metastore_uri: thrift://hive-metastore.example.com:9083
+  target_catalog: lake                                  # 대상 카탈로그 (S3 Hadoop 카탈로그)
+  s3_prefix: warehouse                                  # warehouse = s3://<s3_bucket>/<s3_prefix>
+  s3_endpoint: s3.ap-northeast-2.amazonaws.com
+  tables:
+    # 차원: 매일 전체 덮어쓰기
+    - shop.dim_product
+    # 팩트: --base-dt 하루치 파티션만 교체 (date_column 은 원본 identity 파티션이어야 함)
+    - {name: shop.fct_order, date_column: base_dt}
+
+clickhouse:
+  url: jdbc:clickhouse://clickhouse.example.com:8123/default
+  user: example_user
+  password: example_password
+  tables:
+    # 차원: 매일 전체 덮어쓰기
+    - analytics.product_stats
+    # 팩트: date_column 기준 하루치 → 대상에 base_dt 파티션 추가
+    - {name: analytics.page_view_log, date_column: event_time}

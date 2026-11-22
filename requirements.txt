@@ -1,0 +1,2 @@
+pyyaml
+# pyspark 는 SPARK_HOME 의 Spark(3.4.x)를 사용. 없으면: pip install pyspark==3.4.4

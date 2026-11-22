@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Spark / 실행 로그
+spark-warehouse/
+metastore_db/
+derby.log
+*.log
+
+# jar (spark-submit --packages 로 받음)
+*.jar
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

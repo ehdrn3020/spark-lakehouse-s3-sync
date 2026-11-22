@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="590" viewBox="0 0 1140 590" font-family="'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .box { stroke-width: 1.5; }
+      .title { font-size: 16px; font-weight: 700; fill: #0f172a; }
+      .file { font-size: 15px; font-weight: 700; fill: #0f172a; font-family: Consolas, 'Courier New', monospace; }
+      .sub { font-size: 13px; fill: #334155; }
+      .mono { font-size: 13px; fill: #1e293b; font-family: Consolas, 'Courier New', monospace; }
+      .label { font-size: 12px; fill: #475569; }
+      .line { stroke: #475569; stroke-width: 1.6; fill: none; }
+    </style>
+  </defs>
+
+  <!-- 배경 (GitHub 다크 모드에서도 읽히도록 흰 배경) -->
+  <rect width="1140" height="590" rx="14" fill="#ffffff"/>
+
+  <!-- ── 상단: 실행 · 설정 ── -->
+  <rect class="box" rx="10" x="40" y="40" width="210" height="66" fill="#f1f5f9" stroke="#64748b"/>
+  <text class="file" x="145" y="67" text-anchor="middle">bin/run.sh</text>
+  <text class="sub" x="145" y="89" text-anchor="middle">spark-submit --packages</text>
+
+  <rect class="box" rx="10" x="400" y="30" width="320" height="86" fill="#ede9fe" stroke="#7c3aed"/>
+  <text class="file" x="560" y="55" text-anchor="middle">main.py</text>
+  <text class="sub" x="560" y="77" text-anchor="middle">인자 처리 · 날짜 루프 (--base-dt / 백필)</text>
+  <text class="sub" x="560" y="98" text-anchor="middle">SparkSession: source(hive) · lake(hadoop) · S3A</text>
+
+  <rect class="box" rx="10" x="880" y="40" width="220" height="66" fill="#f1f5f9" stroke="#64748b"/>
+  <text class="file" x="990" y="67" text-anchor="middle">configs/config.yaml</text>
+  <text class="sub" x="990" y="89" text-anchor="middle">→ settings.py</text>
+
+  <path class="line" d="M250,73 L398,73" marker-end="url(#arrow)"/>
+  <path class="line" d="M880,73 L722,73" marker-end="url(#arrow)"/>
+
+  <!-- ── Spark (local) 컨테이너 ── -->
+  <rect x="370" y="150" width="390" height="410" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text class="title" x="388" y="176">Spark (local)</text>
+
+  <path class="line" d="M560,116 L560,192" marker-end="url(#arrow)"/>
+  <text class="label" x="570" y="139">base_dt 마다 run()</text>
+
+  <!-- iceberg_to_s3 -->
+  <rect class="box" rx="10" x="400" y="194" width="320" height="112" fill="#dcfce7" stroke="#16a34a"/>
+  <text class="file" x="416" y="219">pipelines/iceberg_to_s3.py</text>
+  <text class="sub" x="416" y="243">1. DESCRIBE → 스냅샷 id · 파티션 확인</text>
+  <text class="sub" x="416" y="265">2. VERSION AS OF 고정 읽기 · count</text>
+  <text class="sub" x="416" y="287">3. 대상 생성 → overwrite (하루치 / 전체)</text>
+
+  <!-- clickhouse_to_s3 -->
+  <rect class="box" rx="10" x="400" y="326" width="320" height="112" fill="#dcfce7" stroke="#16a34a"/>
+  <text class="file" x="416" y="351">pipelines/clickhouse_to_s3.py</text>
+  <text class="sub" x="416" y="375">1. JDBC 조회 (+ base_dt 컬럼 추가)</text>
+  <text class="sub" x="416" y="397">2. persist · count</text>
+  <text class="sub" x="416" y="419">3. 대상 생성 → overwrite (하루치 / 전체)</text>
+
+  <!-- common -->
+  <rect class="box" rx="10" x="400" y="462" width="320" height="76" fill="#fef9c3" stroke="#ca8a04"/>
+  <text class="file" x="416" y="488">pipelines/common.py</text>
+  <text class="sub" x="416" y="512">건수 검증 · metadata 경로 · expire_snapshots</text>
+
+  <!-- 두 파이프라인 → common -->
+  <path class="line" d="M720,250 L740,250 L740,500 L722,500" marker-end="url(#arrow)" stroke-dasharray="4 4"/>
+  <path class="line" d="M720,382 L740,382" stroke-dasharray="4 4"/>
+
+  <!-- ── 원본 ── -->
+  <rect class="box" rx="10" x="40" y="210" width="220" height="80" fill="#e0f2fe" stroke="#0284c7"/>
+  <text class="title" x="150" y="238" text-anchor="middle">Iceberg</text>
+  <text class="sub" x="150" y="259" text-anchor="middle">Hive metastore · catalog source</text>
+  <text class="sub" x="150" y="278" text-anchor="middle">읽기 전용</text>
+
+  <rect class="box" rx="10" x="40" y="342" width="220" height="80" fill="#e0f2fe" stroke="#0284c7"/>
+  <text class="title" x="150" y="370" text-anchor="middle">ClickHouse</text>
+  <text class="sub" x="150" y="391" text-anchor="middle">JDBC</text>
+  <text class="sub" x="150" y="410" text-anchor="middle">읽기 전용 (SELECT)</text>
+
+  <path class="line" d="M260,250 L398,250" marker-end="url(#arrow)"/>
+  <text class="label" x="329" y="242" text-anchor="middle">snapshot read</text>
+  <path class="line" d="M260,382 L398,382" marker-end="url(#arrow)"/>
+  <text class="label" x="329" y="374" text-anchor="middle">SELECT</text>
+
+  <!-- ── 대상 S3 ── -->
+  <path class="line" d="M760,330 L858,330" marker-end="url(#arrow)"/>
+  <text class="label" x="809" y="322" text-anchor="middle">S3A write</text>
+
+  <rect class="box" rx="10" x="860" y="170" width="250" height="330" fill="#ffedd5" stroke="#ea580c"/>
+  <text class="title" x="985" y="198" text-anchor="middle">Amazon S3</text>
+  <text class="sub" x="985" y="219" text-anchor="middle">Iceberg · Hadoop 카탈로그 lake</text>
+  <text class="mono" xml:space="preserve" x="876" y="254">s3://&lt;bucket&gt;/&lt;s3_prefix&gt;/</text>
+  <text class="mono" xml:space="preserve" x="876" y="278">└ &lt;namespace&gt;/&lt;table&gt;/</text>
+  <text class="mono" xml:space="preserve" x="876" y="302">   ├ metadata/</text>
+  <text class="mono" xml:space="preserve" x="876" y="324">   │  ├ version-hint.text</text>
+  <text class="mono" xml:space="preserve" x="876" y="346">   │  ├ vN.metadata.json</text>
+  <text class="mono" xml:space="preserve" x="876" y="368">   │  └ snap-*.avro, *-m*.avro</text>
+  <text class="mono" xml:space="preserve" x="876" y="392">   └ data/</text>
+  <text class="mono" xml:space="preserve" x="876" y="414">      └ base_dt=YYYY-MM-DD/</text>
+  <text class="mono" xml:space="preserve" x="876" y="436">         └ *.parquet</text>
+  <text class="label" x="985" y="480" text-anchor="middle">파티션 없는 차원은 data/ 바로 아래</text>
+</svg>
